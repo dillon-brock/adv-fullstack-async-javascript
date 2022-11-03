@@ -59,7 +59,12 @@ const tap1 = <A>(f: (a: A) => void): (a: A) => A => {
  * work.
  */
 export const eatFood = (foods: ReadonlyArray<Food>): Promise<Belly> => {
-  return Promise.resolve({nutrients: 0})
+
+  return foods.reduce((acc: Promise<Belly>, food: Food) => {
+    return acc.then(belly => {
+      return gobbleFood(food, belly);
+    })
+  }, Promise.resolve({ nutrients: 0 }))
 }
 
 /**
@@ -67,7 +72,7 @@ export const eatFood = (foods: ReadonlyArray<Food>): Promise<Belly> => {
  * work.
  */
 export const properCook = (): Promise<ReadonlyArray<Food>> => {
-  return Promise.resolve([])
+  return Promise.all(kittyCrunch.map(food => cook(food)));
 }
 
 export const incompleteCook = async (): Promise<ReadonlyArray<Food>> => {
